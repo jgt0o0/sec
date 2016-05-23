@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>$!{page_title} - SEC</title>
+
+    #if($cssblock) $cssblock #end
+
+    <link rel="stylesheet" href="/reign/statics/ace/css/jquery-ui-1.10.3.full.min.css">
+    <link rel="stylesheet" href="/reign/statics/ace/css/ui.jqgrid.css">
+
+    <link rel="stylesheet" href="/reign/statics/ace/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/reign/statics/ace/css/ace.min.css">
+    <link rel="stylesheet" href="/reign/statics/ace/css/font-awesome.min.css">
+
+
+    <script>
+        var selected_menu_id = '$!{selected_menu_id}';
+    </script>
+    <script type="text/javascript" src="/reign/statics/angular.min.js"></script>
+    <script type="text/javascript" src="/reign/statics/ace/js/ace.min.js"></script>
+    <script type="text/javascript" src="/reign/statics/ace/js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="/reign/statics/pages/layout.js"></script>
+
+</head>
+
+<body>
+<div class="main-container" id="main-container">
+##        #parse("left_menu.vm")
+        $screen_content
+</div>
+
+<!-- 下面是每个页面单独需要使用的JS文件 -->
+    #if($javascriptBlock) $javascriptBlock
+    #end
+</body>
+</html>
