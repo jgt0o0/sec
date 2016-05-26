@@ -24,7 +24,7 @@ public class ApiController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiController.class);
 
     @ResponseBody
-    @RequestMapping("/getOnlineSolder")
+    @RequestMapping("getOnlineSolder")
     public JSONObject getOnlineSolder(String message) {
         PageResult pageResult = new PageResult();
         try {
@@ -46,7 +46,7 @@ public class ApiController {
     }
 
     @ResponseBody
-    @RequestMapping("/getLog")
+    @RequestMapping("getLog")
     public JSONObject getLog() {
         PageResult pageResult = new PageResult();
         try {
@@ -55,6 +55,19 @@ public class ApiController {
             pageResult.setCode(0);
         } catch (Exception e) {
             LOGGER.error("获取日志异常", e);
+            pageResult.setCode(-1);
+        }
+        return pageResult.toJson();
+    }
+
+    @ResponseBody
+    @RequestMapping("openBox")
+    public JSONObject openBox(String message) {
+        PageResult pageResult = new PageResult();
+        try {
+
+        } catch (Exception e) {
+            LOGGER.error("尝试开箱子异常", e);
             pageResult.setCode(-1);
         }
         return pageResult.toJson();

@@ -60,7 +60,8 @@
             <div>
 ##                <button id="init">伞兵</button>
 ##                <button id="des">定位</button>
-                <button id="move">开箱子</button>
+                <button id="move">找箱子</button>
+                <button id="openBox">打开箱子</button>
             </div>
             <div id="content">
             </div>

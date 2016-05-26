@@ -2,6 +2,8 @@
  * Created by ji on 16-5-23.
  */
 
+$.solders = new Array();
+
 $.init = function () {
 
     //调整各部分宽高
@@ -12,10 +14,11 @@ $.init = function () {
     //初始化伞兵和箱子
     var dcHeight = $('#main_content').height();
     var dcWidth = $('#main_content').width();
-    for (i = 0; i < 10; i++) {
+    for (i = 1; i < 10; i++) {
+        $.solders.push('solder' + i);
         var randomX = Math.floor(Math.random() * dcWidth + 1);
         var randomY = Math.floor(Math.random() * dcHeight + 1);
-        $('#content').append('<div id="element' + i + '" class="element" style="top: ' + randomY + 'px;left:' + randomX + 'px">solder' + i + '</div>')
+        $('#content').append('<div id="solder' + i + '" class="element" style="top: ' + randomY + 'px;left:' + randomX + 'px">solder' + i + '</div>')
     }
 
     var desX = Math.floor(Math.random() * dcWidth + 1);
@@ -37,6 +40,12 @@ $.getLogs = function () {
         }
     });
 }
+
+
+//判断是否停止
+$.stop = false
+//计数到达箱子旁边的士兵数量
+$.reached = 0
 
 $(document).ready(function () {
 
@@ -81,20 +90,21 @@ $(document).ready(function () {
      * 集结命令下达后,开始集结
      */
     $('#move').click(function () {
-        for (i = 0; i < 10; i++) {
-            move(i)
-        }
+        $.stop=false
+        $.each($.solders, function (i, v) {
+            move(v)
+        })
     })
 
     /**
      * 具体移动过程
      */
-    function move(index) {
+    function move(solderName) {
         var targetEle = $('#target');
         var targetX = toInteger(targetEle.css('left'))
         var targetY = toInteger(targetEle.css('top'))
 
-        var solder = $('#element' + index)
+        var solder = $('#' + solderName)
         var solderX = toInteger(solder.css('left'));
         var solderY = toInteger(solder.css('top'))
 
@@ -112,6 +122,9 @@ $(document).ready(function () {
 
 
         timeId = setInterval(function () {
+            if ($.stop == true) {
+                clearInterval(timeId)
+            }
             doStep()
         }, 13)
 
@@ -124,7 +137,12 @@ $(document).ready(function () {
                 top: a * (solderX) + b
             })
             if ((Math.abs(solderX - targetX)) < 5) {
-                console.log('士兵' + index + '集结完毕')
+                $.reached = $.reached + 1;
+                if ($.reached >= 1) {
+                    $.stop = true
+                }
+                $.solders.splice($.inArray(solderName, $.solders), 1);
+                console.log('士兵' + solderName + '找到箱子')
                 clearInterval(timeId)
             }
         }
@@ -132,15 +150,6 @@ $(document).ready(function () {
         function toInteger(text) {
             text = parseInt(text);
             return isFinite(text) ? text : 0;
-        }
-
-        function sleep(numberMillis) {
-            var now = new Date();
-            var exitTime = now.getTime() + numberMillis;
-            while (true) {
-                now = new Date();
-                if (now.getTime() > exitTime)    return;
-            }
         }
     }
 })
