@@ -16,7 +16,8 @@ public class ClientCache {
 
     private static final ClientCache _INSTANCE = new ClientCache();
 
-    private static final ExpireCache<String, String> cache = ExpireCache.setExpireTime(20, 20, TimeUnit.SECONDS, false)
+
+    private static final ExpireCache<String, String> onlineCache = ExpireCache.setExpireTime(20, 20, TimeUnit.SECONDS, false)
             .build(new ExpireCallBack() {
                 @Override
                 public Object handler(Object key, boolean isEnd) throws Exception {
@@ -34,11 +35,11 @@ public class ClientCache {
     }
 
     public Set<String> getOnlineClient() {
-        return cache.keySet();
+        return onlineCache.keySet();
     }
 
-    public void add(String k, String v) {
-        boolean contains = cache.put(k, v);
+    public void addOnlineClient(String k, String v) {
+        boolean contains = onlineCache.put(k, v);
         if (!contains) {
             LogMessageCache.getInstance().writeMsg("[" + k + "] 上线");
         }

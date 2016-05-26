@@ -20,11 +20,11 @@
 
     .element {
         position: absolute;
-        border: 1px solid #34538b;
+        border: 1px solid #7c838b;
         border-radius: 20px;
         width: 30px;
         height: 30px;
-        background-color: #34538b;
+        background-color: #7c838b;
         font-size: 12px;
         pointer-events: none;
     }
@@ -50,6 +50,12 @@
         left: 100%;
         top: -10px;
     }
+
+    .online{
+        border: 1px solid #34538b;
+        background-color: #34538b;
+    }
+
 </style>
 
 <div class="page-content">

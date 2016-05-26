@@ -1,6 +1,7 @@
 package com.tsinghua.sec.web.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tsinghua.sec.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ public class IndexController {
 
     @RequestMapping("index")
     public String index() {
+        PropertiesUtil.getInstance();
         return "index";
     }
 

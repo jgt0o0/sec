@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tsinghua.sec.cache.ClientCache;
 import com.tsinghua.sec.cache.LogMessageCache;
+import com.tsinghua.sec.cache.SolderCache;
+import com.tsinghua.sec.domain.Solder;
 import com.tsinghua.sec.util.PageResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,7 @@ public class ApiController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiController.class);
 
     @ResponseBody
-    @RequestMapping("getOnlineSolder")
+    @RequestMapping("register")
     public JSONObject getOnlineSolder(String message) {
         PageResult pageResult = new PageResult();
         try {
@@ -32,7 +34,7 @@ public class ApiController {
             String name = param.getString("name");
             String key = param.getString("key");
 
-            ClientCache.getInstance().add(name, key);
+            ClientCache.getInstance().addOnlineClient(name, key);
 
             Set<String> onlineUsers = ClientCache.getInstance().getOnlineClient();
             List<String> userList = new ArrayList<>(onlineUsers);
@@ -40,6 +42,37 @@ public class ApiController {
             pageResult.setCode(0);
         } catch (Exception e) {
             LOGGER.error("获取在线列表失败", e);
+            pageResult.setCode(-1);
+        }
+        return pageResult.toJson();
+    }
+
+    @ResponseBody
+    @RequestMapping("getOnlineSolder")
+    public JSONObject getOnlineSolder() {
+        PageResult pageResult = new PageResult();
+        try {
+            Set<String> onlineUsers = ClientCache.getInstance().getOnlineClient();
+            List<String> userList = new ArrayList<>(onlineUsers);
+            pageResult.setList(userList);
+            pageResult.setCode(0);
+        } catch (Exception e) {
+            LOGGER.error("获取在线列表失败", e);
+            pageResult.setCode(-1);
+        }
+        return pageResult.toJson();
+    }
+
+    @ResponseBody
+    @RequestMapping("getSolders")
+    public JSONObject getSolders(){
+        PageResult pageResult = new PageResult();
+        try {
+            List<Solder> solders = SolderCache.getInstance().getSolders();
+            pageResult.setList(solders);
+            pageResult.setCode(0);
+        } catch (Exception e) {
+            LOGGER.error("获取士兵列表失败", e);
             pageResult.setCode(-1);
         }
         return pageResult.toJson();

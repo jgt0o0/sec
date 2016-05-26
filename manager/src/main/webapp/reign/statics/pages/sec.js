@@ -1,29 +1,71 @@
 /**
  * Created by ji on 16-5-23.
  */
-
 $.solders = new Array();
 
-$.init = function () {
+$.onlineSolders = new Array();
 
+//判断是否停止
+$.stop = false
+//计数到达箱子旁边的士兵数量
+$.reached = 0
+
+$.init = function () {
     //调整各部分宽高
     var mainHeight = $(document.body).height() - 45;
     $('#main_content,#log').height(mainHeight);
+}
 
-
+$.getSolders = function () {
     //初始化伞兵和箱子
     var dcHeight = $('#main_content').height();
     var dcWidth = $('#main_content').width();
-    for (i = 1; i < 10; i++) {
-        $.solders.push('solder' + i);
-        var randomX = Math.floor(Math.random() * dcWidth + 1);
-        var randomY = Math.floor(Math.random() * dcHeight + 1);
-        $('#content').append('<div id="solder' + i + '" class="element" style="top: ' + randomY + 'px;left:' + randomX + 'px">solder' + i + '</div>')
-    }
 
     var desX = Math.floor(Math.random() * dcWidth + 1);
     var desY = Math.floor(Math.random() * dcHeight + 1);
     $('body').append('<img src="/reign/statics/desc.jpg" id="target" class="target" style="top: ' + desY + 'px;left:' + desX + 'px">')
+
+    $.ajax({
+        url: "/api/getSolders",
+        type: "POST",
+        dataType: "JSON",
+        success: function (data) {
+            if (data.code == 0) {
+                $.each(data.rows, function (i, solder) {
+                    $.solders.push(solder.name);
+                    var randomX = Math.floor(Math.random() * dcWidth + 1);
+                    var randomY = Math.floor(Math.random() * dcHeight + 1);
+                    $('#content').append('<div id="' + solder.name + '" class="element" style="top: ' + randomY + 'px;left:' + randomX + 'px">' + solder.name + '</div>')
+                })
+            }
+        }
+    });
+}
+
+$.getOnlineSolder = function () {
+    $.ajax({
+        url: "/api/getOnlineSolder",
+        type: "POST",
+        dataType: "JSON",
+        success: function (data) {
+            if (data.code == 0) {
+                var tmpArray = new Array();
+                if (data.rows) {
+                    $.each(data.rows, function (i, solderName) {
+                        $('#' + solderName).attr('class', 'element online');
+                        tmpArray.push(solderName);
+                        $.onlineSolders.splice($.inArray(solderName, $.onlineSolders), 1)
+                    });
+                }
+                if($.onlineSolders) {
+                    $.each($.onlineSolders, function (i, solderName) {
+                        $('#' + solderName).attr('class', 'element');
+                    });
+                }
+                $.onlineSolders = tmpArray;
+            }
+        }
+    });
 }
 
 $.getLogs = function () {
@@ -33,23 +75,26 @@ $.getLogs = function () {
         dataType: "JSON",
         success: function (data) {
             if (data.code == 0) {
-                $.each(data.rows, function (i, value) {
-                    $('#log').prepend(value + '\n');
-                })
+                if (data.rows) {
+                    $.each(data.rows, function (i, value) {
+                        $('#log').prepend(value + '\n');
+                    })
+                }
             }
         }
     });
 }
 
 
-//判断是否停止
-$.stop = false
-//计数到达箱子旁边的士兵数量
-$.reached = 0
-
 $(document).ready(function () {
 
     $.init()
+
+    $.getSolders()
+
+    setInterval(function () {
+        $.getOnlineSolder()
+    }, 500)
 
     setInterval(function () {
         $.getLogs()
@@ -90,7 +135,7 @@ $(document).ready(function () {
      * 集结命令下达后,开始集结
      */
     $('#move').click(function () {
-        $.stop=false
+        $.stop = false
         $.each($.solders, function (i, v) {
             move(v)
         })
