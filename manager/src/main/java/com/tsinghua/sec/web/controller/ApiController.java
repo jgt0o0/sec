@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Created by ji on 16-5-23.
@@ -59,6 +59,30 @@ public class ApiController {
     }
 
     @ResponseBody
+    @RequestMapping("getOnlineClient")
+    public JSONObject getOnlineClient() {
+        PageResult pageResult = new PageResult();
+        try {
+            List<JSONObject> list = new ArrayList<>();
+            Map<String, String> clients = ClientCache.getInstance().getOnlineClient();
+            if (clients != null && clients.size() > 0) {
+                for (Map.Entry<String, String> entry : clients.entrySet()) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("name", entry.getKey());
+                    obj.put("key", entry.getValue());
+                    list.add(obj);
+                }
+            }
+            pageResult.setList(list);
+            pageResult.setCode(0);
+        } catch (Exception e) {
+            LOGGER.error("获取在线列表失败", e);
+            pageResult.setCode(-1);
+        }
+        return pageResult.toJson();
+    }
+
+    @ResponseBody
     @RequestMapping("getSolders")
     public JSONObject getSolders() {
         PageResult pageResult = new PageResult();
@@ -87,6 +111,7 @@ public class ApiController {
         }
         return pageResult.toJson();
     }
+
 
     @ResponseBody
     @RequestMapping("auth")
