@@ -11,6 +11,9 @@ public class Solder {
     //级别
     private Integer rank;
 
+    //密码
+    private String password;
+
     public String getName() {
         return name;
     }
@@ -25,5 +28,13 @@ public class Solder {
 
     public void setRank(Integer rank) {
         this.rank = rank;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

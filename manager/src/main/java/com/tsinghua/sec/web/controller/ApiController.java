@@ -36,6 +36,7 @@ public class ApiController {
 
             ClientCache.getInstance().addOnlineClient(name, key);
 
+            pageResult.setObj(SolderCache.getInstance().getSolder(name));
             pageResult.setCode(0);
         } catch (Exception e) {
             LOGGER.error("获取在线列表失败", e);

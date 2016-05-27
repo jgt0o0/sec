@@ -33,6 +33,10 @@ public class SolderCache {
         return new ArrayList<>(solderCache.values());
     }
 
+    public Solder getSolder(String name) {
+        return solderCache.get(name);
+    }
+
     public void initAuth() {
         Set<String> names = solderCache.keySet();
         for (String name : names) {
