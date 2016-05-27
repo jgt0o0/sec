@@ -5,6 +5,7 @@ import com.tsinghua.sec.util.cache.ExpireCallBack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -36,8 +37,8 @@ public class ClientCache {
         return _INSTANCE;
     }
 
-    public Set<String> getOnlineClient() {
-        return onlineCache.keySet();
+    public Map<String,String> getOnlineClient() {
+        return onlineCache.getMap();
     }
 
     public void addOnlineClient(String k, String v) {

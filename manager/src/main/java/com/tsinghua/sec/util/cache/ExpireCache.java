@@ -4,6 +4,7 @@ package com.tsinghua.sec.util.cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.DelayQueue;
@@ -180,6 +181,10 @@ public class ExpireCache<K, V> {
 
     public Set<K> keySet() {
         return _CACHE_MAP.keySet();
+    }
+
+    public Map<K,V>  getMap() {
+        return _CACHE_MAP;
     }
 
     public static void main(String[] args) throws InterruptedException {

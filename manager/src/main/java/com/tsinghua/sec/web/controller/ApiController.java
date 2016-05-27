@@ -27,7 +27,7 @@ public class ApiController {
 
     @ResponseBody
     @RequestMapping("register")
-    public JSONObject getOnlineSolder(String message) {
+    public JSONObject register(String message) {
         PageResult pageResult = new PageResult();
         try {
             JSONObject param = JSON.parseObject(message);
@@ -36,9 +36,6 @@ public class ApiController {
 
             ClientCache.getInstance().addOnlineClient(name, key);
 
-            Set<String> onlineUsers = ClientCache.getInstance().getOnlineClient();
-            List<String> userList = new ArrayList<>(onlineUsers);
-            pageResult.setList(userList);
             pageResult.setCode(0);
         } catch (Exception e) {
             LOGGER.error("获取在线列表失败", e);
@@ -52,9 +49,7 @@ public class ApiController {
     public JSONObject getOnlineSolder() {
         PageResult pageResult = new PageResult();
         try {
-            Set<String> onlineUsers = ClientCache.getInstance().getOnlineClient();
-            List<String> userList = new ArrayList<>(onlineUsers);
-            pageResult.setList(userList);
+            pageResult.setObj(ClientCache.getInstance().getOnlineClient());
             pageResult.setCode(0);
         } catch (Exception e) {
             LOGGER.error("获取在线列表失败", e);
@@ -65,7 +60,7 @@ public class ApiController {
 
     @ResponseBody
     @RequestMapping("getSolders")
-    public JSONObject getSolders(){
+    public JSONObject getSolders() {
         PageResult pageResult = new PageResult();
         try {
             List<Solder> solders = SolderCache.getInstance().getSolders();
@@ -103,7 +98,7 @@ public class ApiController {
             String target = param.getString("target");
             SolderCache.getInstance().setAuth(source, target);
         } catch (Exception e) {
-            LOGGER.error("认证失败",e);
+            LOGGER.error("认证失败", e);
             pageResult.setCode(-1);
         }
         return pageResult.toJson();
@@ -111,7 +106,7 @@ public class ApiController {
 
     @ResponseBody
     @RequestMapping("getAuthInfo")
-    public JSONObject getAuthInfo(){
+    public JSONObject getAuthInfo() {
         PageResult pageResult = new PageResult();
         try {
             pageResult.setObj(SolderCache.getInstance().getAuthCache());

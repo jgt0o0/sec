@@ -67,8 +67,8 @@ $.getOnlineSolder = function () {
         success: function (data) {
             if (data.code == 0) {
                 var tmpArray = new Array();
-                if (data.rows) {
-                    $.each(data.rows, function (i, solderName) {
+                if (data.obj) {
+                    $.each(data.obj, function (solderName, publicKey) {
                         $('#' + solderName).attr('class', 'element online');
                         tmpArray.push(solderName);
                         $.onlineSolders.splice($.inArray(solderName, $.onlineSolders), 1)
