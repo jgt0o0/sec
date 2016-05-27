@@ -9,15 +9,15 @@
     </appender>
 
     <category name="org.springframework.web" additivity="true">
-        <priority value="debug"/>
+        <priority value="ERROR"/>
     </category>
 
     <category name="com.reign" additivity="true">
-        <priority value="debug"/>
+        <priority value="WARN"/>
     </category>
 
     <root>
-        <priority value="debug" />
+        <priority value="WARN" />
         <appender-ref ref="CONSOLE" />
     </root>
 </log4j:configuration>

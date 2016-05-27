@@ -73,7 +73,7 @@
             </div>
         </div>
         <div class="col-xs-3" id="log_div">
-            <div style="height: 40%;width:100%" id="connect_div"></div>
+            <div style="height: 40%;width:100%;overflow: auto" id="connect_div"></div>
             <div style="height: 60%">
                 <textarea id="log" style="width: 100%;height: 100%;" disabled></textarea>
             </div>

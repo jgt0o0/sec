@@ -18,12 +18,12 @@ $.init = function () {
 
 $.getSolders = function () {
     //初始化伞兵和箱子
-    var dcHeight = $('#main_content').height();
-    var dcWidth = $('#main_content').width();
+    var dcHeight = $('#main_content').height() - 30;
+    var dcWidth = $('#main_content').width() - 30;
 
     var desX = Math.floor(Math.random() * dcWidth + 1);
     var desY = Math.floor(Math.random() * dcHeight + 1);
-    $('body').append('<img src="/reign/statics/desc.jpg" id="target" class="target" style="top: ' + desY + 'px;left:' + desX + 'px">')
+    $('#content').append('<img src="/reign/statics/desc.jpg" id="target" class="target" style="top: ' + desY + 'px;left:' + desX + 'px">')
 
     $.ajax({
         url: "/api/getSolders",
@@ -32,7 +32,7 @@ $.getSolders = function () {
         success: function (data) {
             if (data.code == 0) {
                 if (data.rows) {
-                    var table = "<table class='table table-striped table-bordered table-hover'>";
+                    var table = "<table class='table table-striped table-bordered table-hover' style='height: 100%;width: 100%'>";
                     table += "<tr><td></td>";
                     $.each(data.rows, function (j, tmpS) {
                         table += "<td id=c_c_" + tmpS.name + ">" + tmpS.name + "</td>";
@@ -94,9 +94,9 @@ $.getAuthInfo = function () {
             if (data.code == 0) {
                 if (data.obj) {
                     $.each(data.obj, function (key, value) {
-                        if (value == '1'){
+                        if (value == '1') {
                             $('#' + key).html("<i class='icon-ok green'></i>");
-                        }else {
+                        } else {
                             $('#' + key).html("");
                         }
                     });
@@ -205,7 +205,7 @@ $(document).ready(function () {
         var timeId;
         var xlen = targetX - solderX;
         var absXlen = Math.abs(xlen);
-        var stepLen = xlen / absXlen
+        var stepLen = xlen / absXlen;
 
 
         timeId = setInterval(function () {
@@ -218,15 +218,16 @@ $(document).ready(function () {
 
         function doStep() {
             solderX = solderX + stepLen
+            solderY = a * (solderX) + b
             solder.css({
                 position: "absolute",
                 left: solderX,
-                top: a * (solderX) + b
+                top: solderY
             })
-            if ((Math.abs(solderX - targetX)) < 5) {
+            if ((Math.abs(solderX - targetX)) < 5 && Math.abs(solderY - targetY) < 5) {
                 $.reached = $.reached + 1;
                 if ($.reached >= 1) {
-                    $.stop = true
+                    //$.stop = true
                 }
                 $.solders.splice($.inArray(solderName, $.solders), 1);
                 console.log('士兵' + solderName + '找到箱子')
