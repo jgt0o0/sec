@@ -34,6 +34,7 @@ public class PropertiesUtil {
                     SolderCache.getInstance().addSolder(name, solder);
                     LOGGER.warn("name:{},rank:{}", name, rank);
                 }
+                SolderCache.getInstance().initAuth();
             }
         } catch (Exception e) {
             LOGGER.error("读取配置异常", e);

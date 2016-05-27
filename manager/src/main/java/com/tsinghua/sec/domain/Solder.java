@@ -11,9 +11,6 @@ public class Solder {
     //级别
     private Integer rank;
 
-    //在线状态
-    private int status;
-
     public String getName() {
         return name;
     }
@@ -28,13 +25,5 @@ public class Solder {
 
     public void setRank(Integer rank) {
         this.rank = rank;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 }

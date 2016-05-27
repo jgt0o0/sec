@@ -51,7 +51,7 @@
         top: -10px;
     }
 
-    .online{
+    .online {
         border: 1px solid #34538b;
         background-color: #34538b;
     }
@@ -61,19 +61,22 @@
 <div class="page-content">
     <div class="row">
         <div id="main_content" class="col-xs-9" style="border: 1px solid #b5b5b5">
-##            <p>位置： <span></span></p>
+        ##            <p>位置： <span></span></p>
 
             <div>
-##                <button id="init">伞兵</button>
-##                <button id="des">定位</button>
+            ##                <button id="init">伞兵</button>
+            ##                <button id="des">定位</button>
                 <button id="move">找箱子</button>
                 <button id="openBox">打开箱子</button>
             </div>
             <div id="content">
             </div>
         </div>
-        <div class="col-xs-3">
-            <textarea id="log" style="width: 100%" disabled></textarea>
+        <div class="col-xs-3" id="log_div">
+            <div style="height: 40%;width:100%" id="connect_div"></div>
+            <div style="height: 60%">
+                <textarea id="log" style="width: 100%;height: 100%;" disabled></textarea>
+            </div>
         </div>
     </div>
 

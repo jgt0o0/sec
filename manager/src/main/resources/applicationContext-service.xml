@@ -12,5 +12,6 @@
 
     <bean id="serverSocket" class="com.tsinghua.sec.service.SocketServer" scope="singleton" init-method="init"></bean>
 
+    <bean id="initService" class="com.tsinghua.sec.service.InitService" scope="singleton" init-method="init"></bean>
 
 </beans>

@@ -25,7 +25,7 @@ public class PageResult implements Serializable {
     /**
      * 返回业务编码
      */
-    private Integer code;
+    private int code;
 
     /**
      * 返回结果信息
@@ -46,11 +46,11 @@ public class PageResult implements Serializable {
      */
     private Object obj;
 
-    public Integer getCode() {
+    public int getCode() {
         return code;
     }
 
-    public void setCode(Integer code) {
+    public void setCode(int code) {
         this.code = code;
     }
 

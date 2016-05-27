@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 开箱请求缓存
  * Created by ji on 16-5-23.
  */
 public class OpenBoxRequestCache {

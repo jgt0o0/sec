@@ -94,6 +94,36 @@ public class ApiController {
     }
 
     @ResponseBody
+    @RequestMapping("auth")
+    public JSONObject auth(String message) {
+        PageResult pageResult = new PageResult();
+        try {
+            JSONObject param = JSON.parseObject(message);
+            String source = param.getString("source");
+            String target = param.getString("target");
+            SolderCache.getInstance().setAuth(source, target);
+        } catch (Exception e) {
+            LOGGER.error("认证失败",e);
+            pageResult.setCode(-1);
+        }
+        return pageResult.toJson();
+    }
+
+    @ResponseBody
+    @RequestMapping("getAuthInfo")
+    public JSONObject getAuthInfo(){
+        PageResult pageResult = new PageResult();
+        try {
+            pageResult.setObj(SolderCache.getInstance().getAuthCache());
+            pageResult.setCode(0);
+        } catch (Exception e) {
+            LOGGER.error("获取认证信息");
+            pageResult.setCode(-1);
+        }
+        return pageResult.toJson();
+    }
+
+    @ResponseBody
     @RequestMapping("openBox")
     public JSONObject openBox(String message) {
         PageResult pageResult = new PageResult();

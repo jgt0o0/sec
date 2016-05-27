@@ -13,7 +13,7 @@ $.reached = 0
 $.init = function () {
     //调整各部分宽高
     var mainHeight = $(document.body).height() - 45;
-    $('#main_content,#log').height(mainHeight);
+    $('#main_content,#log_div').height(mainHeight);
 }
 
 $.getSolders = function () {
@@ -31,12 +31,29 @@ $.getSolders = function () {
         dataType: "JSON",
         success: function (data) {
             if (data.code == 0) {
-                $.each(data.rows, function (i, solder) {
-                    $.solders.push(solder.name);
-                    var randomX = Math.floor(Math.random() * dcWidth + 1);
-                    var randomY = Math.floor(Math.random() * dcHeight + 1);
-                    $('#content').append('<div id="' + solder.name + '" class="element" style="top: ' + randomY + 'px;left:' + randomX + 'px">' + solder.name + '</div>')
-                })
+                if (data.rows) {
+                    var table = "<table class='table table-striped table-bordered table-hover'>";
+                    table += "<tr><td></td>";
+                    $.each(data.rows, function (j, tmpS) {
+                        table += "<td id=c_c_" + tmpS.name + ">" + tmpS.name + "</td>";
+                    });
+                    table += "</tr>"
+
+                    $.each(data.rows, function (i, solder) {
+                        $.solders.push(solder.name);
+                        var randomX = Math.floor(Math.random() * dcWidth + 1);
+                        var randomY = Math.floor(Math.random() * dcHeight + 1);
+                        $('#content').append('<div id="' + solder.name + '" class="element" style="top: ' + randomY + 'px;left:' + randomX + 'px">' + solder.name + '</div>');
+
+                        table += "<tr><td id='r_r_" + solder.name + "'>" + solder.name + "</td>";
+                        $.each(data.rows, function (j, tmpS) {
+                            table += "<td id=" + solder.name + "_" + tmpS.name + "></td>";
+                        });
+                        table += "</tr>"
+                    })
+                    table += "</table>"
+                    $('#connect_div').append(table)
+                }
             }
         }
     });
@@ -57,12 +74,33 @@ $.getOnlineSolder = function () {
                         $.onlineSolders.splice($.inArray(solderName, $.onlineSolders), 1)
                     });
                 }
-                if($.onlineSolders) {
+                if ($.onlineSolders) {
                     $.each($.onlineSolders, function (i, solderName) {
                         $('#' + solderName).attr('class', 'element');
                     });
                 }
                 $.onlineSolders = tmpArray;
+            }
+        }
+    });
+}
+
+$.getAuthInfo = function () {
+    $.ajax({
+        url: "/api/getAuthInfo",
+        type: "POST",
+        dataType: "JSON",
+        success: function (data) {
+            if (data.code == 0) {
+                if (data.obj) {
+                    $.each(data.obj, function (key, value) {
+                        if (value == '1'){
+                            $('#' + key).html("<i class='icon-ok green'></i>");
+                        }else {
+                            $('#' + key).html("");
+                        }
+                    });
+                }
             }
         }
     });
@@ -98,6 +136,10 @@ $(document).ready(function () {
 
     setInterval(function () {
         $.getLogs()
+    }, 500)
+
+    setInterval(function () {
+        $.getAuthInfo()
     }, 500)
 
     /**

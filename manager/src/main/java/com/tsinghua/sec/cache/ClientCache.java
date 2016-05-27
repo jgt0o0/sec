@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 线上节点缓存
  * Created by ji on 16-5-23.
  */
 public class ClientCache {
@@ -23,6 +24,7 @@ public class ClientCache {
                 public Object handler(Object key, boolean isEnd) throws Exception {
                     LOGGER.warn("[{}] 下线", key);
                     LogMessageCache.getInstance().writeMsg("[" + key + "] 下线");
+                    SolderCache.getInstance().clearSolderAuth((String) key);
                     return null;
                 }
             });

@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.util.*;
 
 /**
+ * 日志缓存
  * Created by ji on 16-5-23.
  */
 public class LogMessageCache {
