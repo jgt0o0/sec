@@ -106,7 +106,100 @@ $.getAuthInfo = function () {
     });
 }
 
+$.getOpenBoxRequest = function () {
+    $.ajax({
+        url: "/api/getOpenBoxRequest",
+        type: "POST",
+        dataType: "JSON",
+        success: function (data) {
+            if (data.code == 0) {
+                if (data.rows) {
+                    $.each(data.rows, function (i, solder) {
+                        $.move(solder)
+                    })
+                }
+            }
+        }
+    });
+}
+
 $.getLogs = function () {
+    $.ajax({
+        url: "/api/getLog",
+        type: "POST",
+        dataType: "JSON",
+        success: function (data) {
+            if (data.code == 0) {
+                if (data.rows) {
+                    $.each(data.rows, function (i, value) {
+                        $('#log').prepend(value + '\n');
+                    })
+                }
+            }
+        }
+    });
+}
+
+/**
+ * 具体移动过程
+ */
+$.move = function (solderName) {
+    var targetEle = $('#target');
+    var targetX = toInteger(targetEle.css('left'))
+    var targetY = toInteger(targetEle.css('top'))
+
+    var solder = $('#' + solderName)
+    var solderX = toInteger(solder.css('left'));
+    var solderY = toInteger(solder.css('top'))
+
+    console.log("sourceX:" + solderX + ",sourceY:" + solderY)
+
+    console.log("targetX:" + targetX + ",targetY:" + targetY);
+
+    var a = (solderY - targetY) / (solderX - targetX)
+    var b = solderY - a * solderX
+
+    var timeId;
+    var xlen = targetX - solderX;
+    var absXlen = Math.abs(xlen);
+    var stepLen = xlen / absXlen;
+
+
+    timeId = setInterval(function () {
+        if ($.stop == true) {
+            clearInterval(timeId)
+        }
+        doStep()
+    }, 13)
+
+
+    function doStep() {
+        solderX = solderX + stepLen
+        solderY = a * (solderX) + b
+        solder.css({
+            position: "absolute",
+            left: solderX,
+            top: solderY
+        })
+        if ((Math.abs(solderX - targetX)) < 5 && Math.abs(solderY - targetY) < 5) {
+            $.reached = $.reached + 1;
+            if ($.reached >= 1) {
+                //$.stop = true
+            }
+            $.solders.splice($.inArray(solderName, $.solders), 1);
+            console.log('士兵' + solderName + '找到箱子')
+            clearInterval(timeId)
+            $.openBox(solderName);
+        }
+    }
+
+    function toInteger(text) {
+        text = parseInt(text);
+        return isFinite(text) ? text : 0;
+    }
+}
+
+$.openBox=function(solderName){
     $.ajax({
         url: "/api/getLog",
         type: "POST",
@@ -142,6 +235,10 @@ $(document).ready(function () {
         $.getAuthInfo()
     }, 500)
 
+
+    setInterval(function () {
+        $.getOpenBoxRequest()
+    }, 500)
     /**
      * 初始化伞兵位置
      */
@@ -179,65 +276,8 @@ $(document).ready(function () {
     $('#move').click(function () {
         $.stop = false
         $.each($.solders, function (i, v) {
-            move(v)
+            $.move(v)
         })
     })
 
-    /**
-     * 具体移动过程
-     */
-    function move(solderName) {
-        var targetEle = $('#target');
-        var targetX = toInteger(targetEle.css('left'))
-        var targetY = toInteger(targetEle.css('top'))
-
-        var solder = $('#' + solderName)
-        var solderX = toInteger(solder.css('left'));
-        var solderY = toInteger(solder.css('top'))
-
-        console.log("sourceX:" + solderX + ",sourceY:" + solderY)
-
-        console.log("targetX:" + targetX + ",targetY:" + targetY);
-
-        var a = (solderY - targetY) / (solderX - targetX)
-        var b = solderY - a * solderX
-
-        var timeId;
-        var xlen = targetX - solderX;
-        var absXlen = Math.abs(xlen);
-        var stepLen = xlen / absXlen;
-
-
-        timeId = setInterval(function () {
-            if ($.stop == true) {
-                clearInterval(timeId)
-            }
-            doStep()
-        }, 13)
-
-
-        function doStep() {
-            solderX = solderX + stepLen
-            solderY = a * (solderX) + b
-            solder.css({
-                position: "absolute",
-                left: solderX,
-                top: solderY
-            })
-            if ((Math.abs(solderX - targetX)) < 5 && Math.abs(solderY - targetY) < 5) {
-                $.reached = $.reached + 1;
-                if ($.reached >= 1) {
-                    //$.stop = true
-                }
-                $.solders.splice($.inArray(solderName, $.solders), 1);
-                console.log('士兵' + solderName + '找到箱子')
-                clearInterval(timeId)
-            }
-        }
-
-        function toInteger(text) {
-            text = parseInt(text);
-            return isFinite(text) ? text : 0;
-        }
-    }
 })

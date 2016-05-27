@@ -2,10 +2,7 @@ package com.tsinghua.sec.web.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.tsinghua.sec.cache.ClientCache;
-import com.tsinghua.sec.cache.LogMessageCache;
-import com.tsinghua.sec.cache.RequestCache;
-import com.tsinghua.sec.cache.SolderCache;
+import com.tsinghua.sec.cache.*;
 import com.tsinghua.sec.domain.Solder;
 import com.tsinghua.sec.util.PageResult;
 import org.apache.commons.lang.StringUtils;
@@ -222,14 +219,55 @@ public class ApiController {
         return pageResult.toJson();
     }
 
+    /**
+     * client 发送开箱请求
+     *
+     * @param message
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("openBoxRequest")
+    public JSONObject openBoxRequest(String message) {
+        PageResult pageResult = new PageResult();
+        try {
+            JSONObject param = JSON.parseObject(message);
+            String name = param.getString("name");
+            RequestCache.getInstance().setOpenBoxRequest(name);
+            pageResult.setCode(0);
+            LogMessageCache.getInstance().writeMsg("[" + name + "]开始寻找箱子");
+        } catch (Exception e) {
+            LOGGER.error("尝试开箱子异常", e);
+            pageResult.setCode(-1);
+        }
+        return pageResult.toJson();
+    }
+
+    @ResponseBody
+    @RequestMapping("getOpenBoxRequest")
+    public JSONObject getOpenBoxRequest() {
+        PageResult pageResult = new PageResult();
+        try {
+            pageResult.setList(RequestCache.getInstance().getOpenBoxRequest());
+            pageResult.setCode(0);
+        } catch (Exception e) {
+            LOGGER.error("Server 获取开箱请求异常", e);
+            pageResult.setCode(-1);
+        }
+        return pageResult.toJson();
+    }
+
     @ResponseBody
     @RequestMapping("openBox")
     public JSONObject openBox(String message) {
         PageResult pageResult = new PageResult();
         try {
-
+            JSONObject param = JSON.parseObject(message);
+            String solder = param.getString("name");
+            if (!BoxStatusCache.getInstance().isOpened()) {
+                BoxStatusCache.getInstance().addOpenOp(solder);
+            }
         } catch (Exception e) {
-            LOGGER.error("尝试开箱子异常", e);
+            LOGGER.error("开箱异常", e);
             pageResult.setCode(-1);
         }
         return pageResult.toJson();
