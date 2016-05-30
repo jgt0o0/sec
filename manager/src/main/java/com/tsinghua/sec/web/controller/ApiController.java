@@ -266,6 +266,7 @@ public class ApiController {
             if (!BoxStatusCache.getInstance().isOpened()) {
                 BoxStatusCache.getInstance().addOpenOp(solder);
             }
+            LogMessageCache.getInstance().writeMsg("[" + solder + "]尝试开箱子");
         } catch (Exception e) {
             LOGGER.error("开箱异常", e);
             pageResult.setCode(-1);

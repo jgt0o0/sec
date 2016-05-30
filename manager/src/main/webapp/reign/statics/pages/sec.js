@@ -199,11 +199,12 @@ $.move = function (solderName) {
     }
 }
 
-$.openBox=function(solderName){
+$.openBox = function (solderName) {
     $.ajax({
-        url: "/api/getLog",
+        url: "/api/openBox",
         type: "POST",
         dataType: "JSON",
+        data: {message: '{"name": "' + solderName + '"}'},
         success: function (data) {
             if (data.code == 0) {
                 if (data.rows) {
