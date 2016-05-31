@@ -3,10 +3,7 @@ package com.tsinghua.sec.cache;
 import com.alibaba.fastjson.JSONObject;
 import io.netty.util.internal.ConcurrentSet;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -18,7 +15,7 @@ public class RequestCache {
     private static final Map<String, List<JSONObject>> authRequestCache = new ConcurrentHashMap<String, List<JSONObject>>();
 
     //Client发起的开箱请求
-    private static final Set<String> openBoxRequest = new ConcurrentSet<String>();
+    private static final Map<String, String> openBoxRequest = new ConcurrentHashMap<String, String>();
 
     private static final RequestCache _INSTANCE = new RequestCache();
 
@@ -46,15 +43,15 @@ public class RequestCache {
         return authRequestCache.remove(solder);
     }
 
-    public void setOpenBoxRequest(String solder) {
-        openBoxRequest.add(solder);
+    public void setOpenBoxRequest(String solder, String password) {
+        openBoxRequest.put(solder, password);
     }
 
-    public List<String> getOpenBoxRequest() {
-        List<String> resultList = new ArrayList<>();
+    public Map<String, String> getOpenBoxRequest() {
+        Map<String, String> resultList = new HashMap<String, String>();
         synchronized (openBoxRequest) {
             if (openBoxRequest != null && openBoxRequest.size() > 0) {
-                resultList = new ArrayList(openBoxRequest);
+                resultList = new HashMap<String, String>(openBoxRequest);
                 openBoxRequest.clear();
             }
         }

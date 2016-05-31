@@ -146,8 +146,8 @@ public class ApiController {
         PageResult pageResult = new PageResult();
         try {
             JSONObject param = JSON.parseObject(message);
-            String target = param.getString("target");
-            String source = param.getString("source");
+            String target = param.getString("sender");
+            String source = param.getString("receiver");
             if (StringUtils.isEmpty(target)) {
                 throw new RuntimeException("没有认证目标");
             }
@@ -232,7 +232,8 @@ public class ApiController {
         try {
             JSONObject param = JSON.parseObject(message);
             String name = param.getString("name");
-            RequestCache.getInstance().setOpenBoxRequest(name);
+            String pwd = param.getString("password");
+            RequestCache.getInstance().setOpenBoxRequest(name, pwd);
             pageResult.setCode(0);
             LogMessageCache.getInstance().writeMsg("[" + name + "]开始寻找箱子");
         } catch (Exception e) {
@@ -247,7 +248,7 @@ public class ApiController {
     public JSONObject getOpenBoxRequest() {
         PageResult pageResult = new PageResult();
         try {
-            pageResult.setList(RequestCache.getInstance().getOpenBoxRequest());
+            pageResult.setList(new ArrayList(RequestCache.getInstance().getOpenBoxRequest().keySet()));
             pageResult.setCode(0);
         } catch (Exception e) {
             LOGGER.error("Server 获取开箱请求异常", e);
