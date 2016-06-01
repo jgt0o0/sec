@@ -104,6 +104,9 @@ public class ApiController {
         PageResult pageResult = new PageResult();
         try {
             List<Solder> solders = SolderCache.getInstance().getSolders();
+            for (Solder s : solders) {
+                s.setRank(null);
+            }
             pageResult.setList(solders);
             pageResult.setCode(0);
         } catch (Exception e) {
@@ -146,8 +149,8 @@ public class ApiController {
         PageResult pageResult = new PageResult();
         try {
             JSONObject param = JSON.parseObject(message);
-            String target = param.getString("sender");
-            String source = param.getString("receiver");
+            String target = param.getString("receiver");
+            String source = param.getString("sender");
             if (StringUtils.isEmpty(target)) {
                 throw new RuntimeException("没有认证目标");
             }
