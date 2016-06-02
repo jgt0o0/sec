@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tsinghua.sec.cache.*;
 import com.tsinghua.sec.domain.Solder;
+import com.tsinghua.sec.service.PointNum;
+import com.tsinghua.sec.service.ShareKeys;
 import com.tsinghua.sec.util.PageResult;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -12,9 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by ji on 16-5-23.
@@ -267,10 +267,28 @@ public class ApiController {
         try {
             JSONObject param = JSON.parseObject(message);
             String solder = param.getString("name");
+            Set<String> solders = new HashSet<String>();
             if (!BoxStatusCache.getInstance().isOpened()) {
-                BoxStatusCache.getInstance().addOpenOp(solder);
+                solders = BoxStatusCache.getInstance().addOpenOp(solder);
             }
-            LogMessageCache.getInstance().writeMsg("[" + solder + "]尝试开箱子");
+            List<PointNum> pointNums = new ArrayList<PointNum>();
+            for (String tmpSolder : solders) {
+                String pwd = SolderCache.getInstance().getSolder(tmpSolder).getPassword();
+                if (pwd != null) {
+                    String[] pairs = pwd.split(",");
+                    double x = Double.parseDouble(pairs[0]);
+                    double y = Double.parseDouble(pairs[1]);
+                    PointNum pointNum = new PointNum(x, y);
+                    pointNums.add(pointNum);
+                }
+            }
+            int result = ShareKeys.getInstance().SolveKey(pointNums);
+            if (result == ShareKeys.KEY_NUM) {
+                LogMessageCache.getInstance().writeMsg("[" + solders + "]成功打开箱子");
+            } else {
+                LogMessageCache.getInstance().writeMsg("[" + solders + "]尝试打开箱子失败");
+            }
+
         } catch (Exception e) {
             LOGGER.error("开箱异常", e);
             pageResult.setCode(-1);

@@ -57,4 +57,9 @@ public class RequestCache {
         }
         return resultList;
     }
+
+    public String getOpenBoxPwd(String name) {
+        return openBoxRequest.get(name);
+    }
+
 }
