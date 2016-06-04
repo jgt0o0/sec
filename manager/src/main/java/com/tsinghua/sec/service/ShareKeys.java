@@ -64,7 +64,6 @@ public class ShareKeys {
             if (bflag) continue;
             double y = fun.GetY(x);
             lstResult.add(new PointNum(x, y));
-            System.out.println("x= " + x + "  y= " + y);
         }
 
         return lstResult;
@@ -85,10 +84,7 @@ public class ShareKeys {
                     if (m == -1) {
                         matrix[i][n] = param.get(i).Y;
                     }
-
-                    System.out.print(matrix[i][n] + " ");
                 }
-                System.out.println(" ");
             }
             DecimalFormat df = new DecimalFormat("#");
             double[] rst = new Equation().caculate(matrix);

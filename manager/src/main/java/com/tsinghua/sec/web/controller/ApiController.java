@@ -216,11 +216,56 @@ public class ApiController {
             pageResult.setObj(SolderCache.getInstance().getAuthCache());
             pageResult.setCode(0);
         } catch (Exception e) {
-            LOGGER.error("获取认证信息");
+            LOGGER.error("获取认证信息失败", e);
             pageResult.setCode(-1);
         }
         return pageResult.toJson();
     }
+
+    /**
+     * 百万富翁请求
+     *
+     * @param message
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("millionaire")
+    public JSONObject millionaire(String message) {
+        PageResult pageResult = new PageResult();
+        try {
+            JSONObject param = JSON.parseObject(message);
+            String receiver = param.getString("receiver");
+            MillionaireReqCache.getInstance().addRequest(receiver, param);
+            pageResult.setCode(0);
+        } catch (Exception e) {
+            LOGGER.error("百万富翁请求失败", e);
+            pageResult.setCode(-1);
+        }
+        return pageResult.toJson();
+    }
+
+    /**
+     * 客户端获取百万富翁请求
+     *
+     * @param message
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("getMillionaireReq")
+    public JSONObject getMillionaireReq(String message) {
+        PageResult pageResult = new PageResult();
+        try {
+            JSONObject param = JSON.parseObject(message);
+            String name = param.getString("name");
+            pageResult.setList(MillionaireReqCache.getInstance().getRequests(name));
+            pageResult.setCode(0);
+        } catch (Exception e) {
+            LOGGER.error("获取百万富翁请求异常", e);
+            pageResult.setCode(-1);
+        }
+        return pageResult.toJson();
+    }
+
 
     /**
      * client 发送开箱请求
