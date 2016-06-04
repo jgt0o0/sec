@@ -19,7 +19,7 @@ public class ClientCache {
     private static final ClientCache _INSTANCE = new ClientCache();
 
 
-    private static final ExpireCache<String, String> onlineCache = ExpireCache.setExpireTime(20, 20, TimeUnit.SECONDS, false)
+    private static final ExpireCache<String, String> onlineCache = ExpireCache.setExpireTime(20, 20, TimeUnit.DAYS, false)
             .build(new ExpireCallBack() {
                 @Override
                 public Object handler(Object key, boolean isEnd) throws Exception {

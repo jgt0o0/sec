@@ -33,6 +33,7 @@ public class ApiController {
     @ResponseBody
     @RequestMapping("register")
     public JSONObject register(String message) {
+        LOGGER.error("请求{}", message);
         PageResult pageResult = new PageResult();
         try {
             JSONObject param = JSON.parseObject(message);
@@ -44,7 +45,7 @@ public class ApiController {
             pageResult.setObj(SolderCache.getInstance().getSolder(name));
             pageResult.setCode(0);
         } catch (Exception e) {
-            LOGGER.error("获取在线列表失败", e);
+            LOGGER.error("注册失败{}", message, e);
             pageResult.setCode(-1);
         }
         return pageResult.toJson();
@@ -105,7 +106,7 @@ public class ApiController {
         try {
             List<Solder> solders = SolderCache.getInstance().getSolders();
             for (Solder s : solders) {
-                s.setRank(null);
+//                s.setRank(null);
             }
             pageResult.setList(solders);
             pageResult.setCode(0);
@@ -158,7 +159,7 @@ public class ApiController {
             pageResult.setCode(0);
             LogMessageCache.getInstance().writeMsg("[" + source + "]向[" + target + "] 发起认证请求");
         } catch (Exception e) {
-            LOGGER.error("认证失败", e);
+            LOGGER.error("认证失败{}", message, e);
             pageResult.setCode(-1);
         }
         return pageResult.toJson();
@@ -174,7 +175,7 @@ public class ApiController {
             pageResult.setList(RequestCache.getInstance().getAuthRequest(name));
             pageResult.setCode(0);
         } catch (Exception e) {
-            LOGGER.error("获取认证信息异常", e);
+            LOGGER.error("获取认证信息异常{}", message, e);
             pageResult.setCode(-1);
         }
         return pageResult.toJson();
@@ -197,7 +198,7 @@ public class ApiController {
             SolderCache.getInstance().setAuth(source, target);
             LogMessageCache.getInstance().writeMsg("[" + source + "]成功认证[" + target + "]");
         } catch (Exception e) {
-            LOGGER.error("处理认证成功消息异常", e);
+            LOGGER.error("处理认证成功消息异常{}", message, e);
             pageResult.setCode(-1);
         }
         return pageResult.toJson();
@@ -235,10 +236,19 @@ public class ApiController {
         try {
             JSONObject param = JSON.parseObject(message);
             String receiver = param.getString("receiver");
-            MillionaireReqCache.getInstance().addRequest(receiver, param);
+            if (receiver.equals("all")) {
+                Map<String, String> onlineClients = ClientCache.getInstance().getOnlineClient();
+                if (onlineClients != null && onlineClients.size() > 0) {
+                    for (String name : onlineClients.keySet()) {
+                        MillionaireReqCache.getInstance().addRequest(name, param);
+                    }
+                }
+            } else {
+                MillionaireReqCache.getInstance().addRequest(receiver, param);
+            }
             pageResult.setCode(0);
         } catch (Exception e) {
-            LOGGER.error("百万富翁请求失败", e);
+            LOGGER.error("百万富翁请求失败{}j", message, e);
             pageResult.setCode(-1);
         }
         return pageResult.toJson();
@@ -257,10 +267,10 @@ public class ApiController {
         try {
             JSONObject param = JSON.parseObject(message);
             String name = param.getString("name");
-            pageResult.setList(MillionaireReqCache.getInstance().getRequests(name));
+            pageResult.setObj(MillionaireReqCache.getInstance().getRequests(name));
             pageResult.setCode(0);
         } catch (Exception e) {
-            LOGGER.error("获取百万富翁请求异常", e);
+            LOGGER.error("获取百万富翁请求异常{}", message, e);
             pageResult.setCode(-1);
         }
         return pageResult.toJson();
