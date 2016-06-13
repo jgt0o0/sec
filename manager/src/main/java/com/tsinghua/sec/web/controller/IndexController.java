@@ -23,6 +23,11 @@ public class IndexController {
     }
 
 
+    @RequestMapping("show")
+    public String show() {
+        return "show";
+    }
+
     @ResponseBody
     @RequestMapping("rsa")
     public JSONObject rsa(String message) {

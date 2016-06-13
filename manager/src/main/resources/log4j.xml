@@ -8,9 +8,13 @@
         </layout>
     </appender>
 
-    <category name="org.springframework.web" additivity="true">
-        <priority value="ERROR"/>
-    </category>
+    <appender name="FILE_APPENDER" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="file" value="/tmp/log.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %-5p %c(%t); %x:%m%n"/>
+        </layout>
+    </appender>
 
     <category name="com.reign" additivity="true">
         <priority value="WARN"/>
@@ -19,5 +23,6 @@
     <root>
         <priority value="WARN" />
         <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE_APPENDER"/>
     </root>
 </log4j:configuration>

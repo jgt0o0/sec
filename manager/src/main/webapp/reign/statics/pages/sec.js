@@ -23,7 +23,9 @@ $.getSolders = function () {
 
     var desX = Math.floor(Math.random() * dcWidth + 1);
     var desY = Math.floor(Math.random() * dcHeight + 1);
-    $('#content').append('<img src="/reign/statics/desc.jpg" id="target" class="target" style="top: ' + desY + 'px;left:' + desX + 'px">')
+    desX = dcWidth / 2;
+    desY = dcHeight / 2;
+    $('#content').append('<img src="/reign/statics/dec-new.jpg" id="target" class="target" style="width:100px;height:100px;top: ' + desY + 'px;left:' + desX + 'px">')
 
     $.ajax({
         url: "/api/getSolders",
@@ -32,7 +34,7 @@ $.getSolders = function () {
         success: function (data) {
             if (data.code == 0) {
                 if (data.rows) {
-                    var table = "<table class='table table-striped table-bordered table-hover' style='height: 100%;width: 100%'>";
+                    var table = "<table class='table table-striped table-bordered table-hover' style='height: 90%;width: 100%'>";
                     table += "<tr><td></td>";
                     $.each(data.rows, function (j, tmpS) {
                         table += "<td id=c_c_" + tmpS.name + ">" + tmpS.name + "</td>";
@@ -47,7 +49,7 @@ $.getSolders = function () {
 
                         table += "<tr><td id='r_r_" + solder.name + "'>" + solder.name + "</td>";
                         $.each(data.rows, function (j, tmpS) {
-                            table += "<td id=" + solder.name + "_" + tmpS.name + "></td>";
+                            table += "<td style='text-align:center' id=" + solder.name + "_" + tmpS.name + "></td>";
                         });
                         table += "</tr>"
                     })
@@ -69,14 +71,14 @@ $.getOnlineSolder = function () {
                 var tmpArray = new Array();
                 if (data.obj) {
                     $.each(data.obj, function (solderName, publicKey) {
-                        $('#' + solderName).attr('class', 'element online');
+                        $('#' + solderName).addClass('online');
                         tmpArray.push(solderName);
                         $.onlineSolders.splice($.inArray(solderName, $.onlineSolders), 1)
                     });
                 }
                 if ($.onlineSolders) {
                     $.each($.onlineSolders, function (i, solderName) {
-                        $('#' + solderName).attr('class', 'element');
+                        $('#' + solderName).removeClass('online');
                     });
                 }
                 $.onlineSolders = tmpArray;
@@ -95,7 +97,7 @@ $.getAuthInfo = function () {
                 if (data.obj) {
                     $.each(data.obj, function (key, value) {
                         if (value == '1') {
-                            $('#' + key).html("<i class='icon-ok green'></i>");
+                            $('#' + key).html("<i class='icon-ok green bigger-150'></i>");
                         } else {
                             $('#' + key).html("");
                         }
@@ -132,8 +134,23 @@ $.getLogs = function () {
             if (data.code == 0) {
                 if (data.rows) {
                     $.each(data.rows, function (i, value) {
+                        var index = value.indexOf("Stage=");
+                        if (index != -1) {
+                            var str = value.substr(index + 6, value.length);
+                            var compareVal = str.split("-");
+                            $('.element').removeClass('compare');
+                            $('#' + compareVal[0]).addClass('compare');
+                            $('#' + compareVal[1]).addClass('compare')
+                        } else {
+                            index = value.indexOf('[最高指挥官]是:');
+                            if (index != -1) {
+                                var str = value.substr(index + 9);
+                                $('.element').removeClass('compare');
+                                $('#' + str).addClass('compare');
+                            }
+                        }
                         $('#log').prepend(value + '\n');
-                    })
+                    });
                 }
             }
         }
@@ -217,6 +234,11 @@ $.openBox = function (solderName) {
     });
 }
 
+
+$.randomFrom = function (lowValue, highValue) {
+    var choice = highValue - lowValue + 1;
+    return Math.floor(Math.random() * choice + lowValue);
+}
 
 $(document).ready(function () {
 

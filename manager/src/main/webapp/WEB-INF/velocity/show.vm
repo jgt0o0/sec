@@ -1,0 +1,39 @@
+<div class="page-content">
+    <div class="row" id="login_div">
+        <div class="col-xs-12">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" for="id_user_name"> 用户名 </label>
+
+                    <div class="col-sm-4">
+                        <input type="text" name="userName" id="id_user_name" ng-model="mainScript"
+                               class="col-xs-8 col-sm-5">
+                        <div class="col-sm-1">
+                            <button class="btn btn-info" type="button" id="login_btn">
+                                <i class="icon-ok"></i>
+                                登陆
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row" style="display: none" id="id_info_div">
+        <div class="col-xs-12">
+            <form class="form-horizontal" role="form" id="taskForm">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" for="id_task_name"> 任务名称 </label>
+
+                    <div class="col-sm-9" id="id_name_div">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+#define($javascriptBlock)
+<script type="text/javascript" src="/reign/statics/pages/show.js"></script>
+#end

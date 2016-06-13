@@ -235,6 +235,7 @@ public class ApiController {
         PageResult pageResult = new PageResult();
         try {
             JSONObject param = JSON.parseObject(message);
+
             String receiver = param.getString("receiver");
             if (receiver.equals("all")) {
                 Map<String, String> onlineClients = ClientCache.getInstance().getOnlineClient();
@@ -243,8 +244,21 @@ public class ApiController {
                         MillionaireReqCache.getInstance().addRequest(name, param);
                     }
                 }
+                String msg = param.getString("msg");
+                LogMessageCache.getInstance().writeMsg("[最高指挥官]是:" + msg);
             } else {
                 MillionaireReqCache.getInstance().addRequest(receiver, param);
+                try {
+
+                    String msg = param.getString("msg");
+                    if (msg.contains("Step=0")) {
+                        String[] msgArray = msg.split("&");
+                        String stage = msgArray[5];
+                        LogMessageCache.getInstance().writeMsg("[百万富翁算法阶段]" + stage);
+                    }
+                } catch (Exception e) {
+                    LOGGER.error("解析百万富翁msg异常", e);
+                }
             }
             pageResult.setCode(0);
         } catch (Exception e) {
@@ -325,24 +339,28 @@ public class ApiController {
             Set<String> solders = new HashSet<String>();
             if (!BoxStatusCache.getInstance().isOpened()) {
                 solders = BoxStatusCache.getInstance().addOpenOp(solder);
-            }
-            List<PointNum> pointNums = new ArrayList<PointNum>();
-            for (String tmpSolder : solders) {
-                String pwd = SolderCache.getInstance().getSolder(tmpSolder).getPassword();
-                if (pwd != null) {
-                    String[] pairs = pwd.split(",");
-                    double x = Double.parseDouble(pairs[0]);
-                    double y = Double.parseDouble(pairs[1]);
-                    PointNum pointNum = new PointNum(x, y);
-                    pointNums.add(pointNum);
+                List<PointNum> pointNums = new ArrayList<PointNum>();
+                for (String tmpSolder : solders) {
+                    String pwd = SolderCache.getInstance().getSolder(tmpSolder).getPassword();
+                    if (pwd != null) {
+                        String[] pairs = pwd.split(",");
+                        double x = Double.parseDouble(pairs[0]);
+                        double y = Double.parseDouble(pairs[1]);
+                        PointNum pointNum = new PointNum(x, y);
+                        pointNums.add(pointNum);
+                    }
                 }
-            }
-            int result = ShareKeys.getInstance().SolveKey(pointNums);
-            if (result == ShareKeys.KEY_NUM) {
-                LogMessageCache.getInstance().writeMsg("[" + solders + "]成功打开箱子");
+                int result = ShareKeys.getInstance().SolveKey(pointNums);
+                if (result == ShareKeys.KEY_NUM) {
+                    BoxStatusCache.getInstance().setOpened();
+                    LogMessageCache.getInstance().writeMsg("[" + solders + "]成功打开箱子");
+                } else {
+                    LogMessageCache.getInstance().writeMsg("[" + solders + "]尝试打开箱子失败");
+                }
             } else {
-                LogMessageCache.getInstance().writeMsg("[" + solders + "]尝试打开箱子失败");
+                LogMessageCache.getInstance().writeMsg("箱子已经被打开了");
             }
+
 
         } catch (Exception e) {
             LOGGER.error("开箱异常", e);
